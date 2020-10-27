@@ -1,5 +1,6 @@
 import math
 
+from typing import List
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.key import *
 from crypt.engine.data import *
@@ -39,7 +40,8 @@ class RSA(BaseEngine):
         else:
             raise NotImplementedError('Belum dibuat')
 
-    def generate_key(self, p: int, q: int, output_path: str):
+    def generate_key(self, params: List[int], output_path: str):
+        p, q = params
         n = p * q
         toitent_n = toitent(p) * toitent(q)
         for i in range(toitent_n, 0, -1):
@@ -53,7 +55,7 @@ class RSA(BaseEngine):
 if __name__ == '__main__':
     rsa = RSA()
     data = Data(DataType.TEXT, 'abcdeajdkasdkakdsasdnoqjwneoqiwjeqowijeqwoiejqwoejio')
-    e, d, n = rsa.generate_key(29, 31, 'a')
+    e, d, n = rsa.generate_key([231, 491], 'a')
     public_key = Key([n, e])
     secret_key = Key([n, d])
     result = rsa.encrypt(public_key, data)
