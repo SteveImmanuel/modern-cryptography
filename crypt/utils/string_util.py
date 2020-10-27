@@ -53,7 +53,7 @@ def group_string(plain_text: str, block_size: int) -> List[str]:
     Returns:
         List[str]
     """
-    return textwrap.wrap(plain_text, width=block_size)
+    return textwrap.wrap(plain_text, width=block_size, drop_whitespace=False)
 
 
 if __name__ == '__main__':
