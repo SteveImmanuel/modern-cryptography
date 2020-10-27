@@ -37,7 +37,6 @@ def is_prime(n: int) -> bool:
     Returns:
         bool: is prime or not
     """
-    #
     if (n % 2 == 0 and n > 2) or n <= 1:
         return False
     for i in range(3, int(math.sqrt(n)) + 1, 2):
@@ -55,4 +54,4 @@ def get_block_size(n: int) -> int:
     Returns:
         int: block size in bytes
     """
-    return max(MAX_BLOCK_SIZE, min(1, n.bit_length() - 1))
+    return max(MAX_BLOCK_SIZE, min(1, (n.bit_length() - 1) // 8))
