@@ -1,5 +1,6 @@
 import math
 
+from typing import List
 from crypt.constant import *
 
 
@@ -54,4 +55,55 @@ def get_block_size(n: int) -> int:
     Returns:
         int: block size in bytes
     """
-    return max(MAX_BLOCK_SIZE, min(1, (n.bit_length() - 1) // 8))
+    return min(MAX_BLOCK_SIZE, max(1, (n.bit_length() - 1) // 8))
+
+
+def egcd(a: int, b: int) -> List[int]:
+    """Returns extended gcd of a and b in format gcd(a,b), x, y
+    where ax + by = gcb(a,b)
+
+    Args:
+        a (int): any integer
+        b (int): any integer
+    
+    Returns:
+        List[int]
+    """
+    if a == 0:
+        return b, 0, 1
+    else:
+        g, y, x = egcd(b % a, a)
+        return g, x - (b // a) * y, y
+
+
+def mod_inverse(e: int, n: int) -> int:
+    """Return inverse modulus of e in n so that ed = 1 mod n
+
+
+    Args:
+        e (int): any integer
+        n (int): any integer
+
+    Returns:
+        int
+    """
+    g, x, y = egcd(e, n)
+    if g != 1:
+        raise Exception('e has no modulus inverse in n')
+    return x % n
+
+
+if __name__ == '__main__':
+    p = 47
+    q = 71
+    e = 79
+    n = p * q
+    t_n = 46 * 70
+    d = mod_inverse(e, t_n)
+    print('p:', p)
+    print('q:', q)
+    print('n:', n)
+    print('t_n:', t_n)
+    print('e:', e)
+    print('d:', d)
+    print((d * e) % t_n)
