@@ -56,7 +56,7 @@ def group_string(plain_text: str, block_size: int) -> List[str]:
     return textwrap.wrap(plain_text, width=block_size)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     a = 'test123'
     a = group_string(a, 3)
     temp = []
