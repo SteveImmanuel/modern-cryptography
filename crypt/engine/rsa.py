@@ -19,7 +19,7 @@ class RSA(BaseEngine):
         block_size = get_block_size(n)
         max_digit = get_digit_count(n)
 
-        if plain_text.type == DataType.TEXT:
+        if plain_text.data_type == DataType.TEXT:
             block_bytes = group_bytes(plain_text.value, block_size)
             block_bytes = map(lambda x: bytes_to_int(x, True), block_bytes)
             result = []
@@ -45,7 +45,7 @@ class RSA(BaseEngine):
         block_size = get_block_size(n)
         max_digit = get_digit_count(n)
 
-        if cipher_text.type == DataType.TEXT:
+        if cipher_text.data_type == DataType.TEXT:
             block_bytes = group_bytes(cipher_text.value, max_digit)
             block_bytes = map(int, block_bytes)
             result = []
@@ -69,10 +69,11 @@ class RSA(BaseEngine):
         p, q = params
         n = p * q
         toitent_n = toitent(p) * toitent(q)
-        for i in range(toitent_n, 0, -1):
-            if is_relative_prime(i, toitent_n):
-                e = i
+        while True:
+            e = random.randint(1, toitent_n - 2)
+            if is_relative_prime(e, toitent_n):
                 break
+
         d = mod_inverse(e, toitent_n)
 
         public_key = Key([n, e])
@@ -83,7 +84,7 @@ class RSA(BaseEngine):
 
         with open(f'{output_path}/rsa.pri', 'wb') as out:
             pickle.dump(secret_key, out)
-        return e, d, n
+        return f'Keys rsa.pub and rsa.pri saved in {output_path}'
 
 
 if __name__ == '__main__':
