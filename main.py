@@ -320,6 +320,13 @@ class Ui_MainWindow(object):
             "All Files (*)",
         )
         if fileName:
+            if data==FileCategory.PUBLICKEY:
+                if not fileName.endswith('.pub'):
+                    fileName += '.pub'
+            if data==FileCategory.PRIVATEKEY:
+                if not fileName.endswith('.pri'):
+                    fileName += '.pri'
+
             with open(fileName, 'w') as f:
                 if data==FileCategory.PLAINTEXT:
                     f.write(self.Plaintext_Text.toPlainText())
