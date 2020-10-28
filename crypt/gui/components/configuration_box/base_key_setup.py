@@ -8,5 +8,9 @@ class BaseKeySetup(QWidget):
         super(BaseKeySetup, self).__init__(parent=parent)
 
     @abstractmethod
+    def build_key(self, is_private: bool) -> Key:
+        pass
+
+    @abstractmethod
     def apply_key(self, key: Key):
         pass

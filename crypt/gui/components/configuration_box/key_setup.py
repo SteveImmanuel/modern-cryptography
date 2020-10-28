@@ -1,7 +1,8 @@
-from PyQt5.QtWidgets import QLineEdit, QLabel, QWidget, QVBoxLayout, QRadioButton, QButtonGroup, QSizePolicy, QSpacerItem, QGroupBox
+from PyQt5.QtWidgets import QLineEdit, QLabel, QWidget, QVBoxLayout, QRadioButton, QButtonGroup, QSizePolicy, QSpacerItem, QGroupBox, QFileDialog
 
 from crypt.gui.encryption_parms import OutputType, EncryptionParms
 from crypt.gui.components.configuration_box.key_widget_factory import *
+from crypt.engine.key import *
 
 
 class KeySetup(QGroupBox):
@@ -21,3 +22,6 @@ class KeySetup(QGroupBox):
         self.layout.addSpacerItem(self.spacer)
         self.layout.setSpacing(20)
         self.setLayout(self.layout)
+
+    def get_key(self, is_private: bool) -> Key:
+        return self.key_input.build_key(is_private)

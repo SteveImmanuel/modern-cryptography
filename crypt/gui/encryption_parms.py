@@ -38,7 +38,7 @@ class EncryptionParms:
             self.signal = ParamsSignal()
             self.mode = None
             self.engine = None
-            self.engine_type = None
+            self.engine_type = EngineType.RSA
             self.old_engine_type = None
             self.output_conf = None
 

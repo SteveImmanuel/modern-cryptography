@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QButtonGroup, QRadioButton, QSizePolicy, QComboBox
 from PyQt5.QtCore import QSize
 
-from crypt.gui.components.configuration_box.key_generation import KeyGeneration
+from crypt.gui.components.configuration_box.keygen import Keygen
 from crypt.gui.components.configuration_box.key_setup import KeySetup
 from crypt.engine.engine_factory import EngineType
 
@@ -18,7 +18,7 @@ class ConfigurationBox(QWidget):
         self.combo_box = QComboBox()
         self.combo_box.addItems(map(lambda x: x.value, self.list_of_algorithm))
 
-        self.key_generation = KeyGeneration()
+        self.key_generation = Keygen()
         self.key_generation.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         self.key_setup = KeySetup()
