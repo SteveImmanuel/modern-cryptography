@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 from PyQt5.QtWidgets import QWidget
 from crypt.engine.key import *
 
@@ -8,5 +9,5 @@ class BaseKeygen(QWidget):
         super(BaseKeygen, self).__init__(parent=parent)
 
     @abstractmethod
-    def build_key(self) -> Key:
+    def build_params(self) -> List[int]:
         pass

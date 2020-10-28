@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton, QFileDialog
+from PyQt5 import QtCore
 
 from crypt.gui.components.configuration_box.base_keygen import BaseKeygen
 from crypt.gui.components.configuration_box.edit_with_button import EditWithButton
-from crypt.gui.components.main_input.input_file import InputFile
 from crypt.engine.key import *
+from crypt.utils.number_util import generate_prime_number
 
 
 class RSAKeygen(BaseKeygen):
@@ -14,17 +15,34 @@ class RSAKeygen(BaseKeygen):
     def setup_ui(self):
         self.p_value = EditWithButton('p value', 'Randomize')
         self.q_value = EditWithButton('q value', 'Randomize')
-        self.output_file = InputFile('Output directory', 'Browse')
         self.spacer = QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.p_value)
         self.layout.addWidget(self.q_value)
         self.layout.addSpacerItem(self.spacer)
-        self.layout.addWidget(self.output_file)
 
         self.setLayout(self.layout)
 
-    def build_key(self) -> Key:
-        text = self.line_edit.text()
-        return Key(KeyType.STRING, [text])
+        self.p_value.btn_random.clicked.connect(lambda: self.randomize(is_p=True))
+        self.q_value.btn_random.clicked.connect(lambda: self.randomize(is_p=False))
+
+    def randomize(self, is_p: bool):
+        random_number = generate_prime_number(9)
+        if is_p:
+            self.p_value.line_edit.setText(str(random_number))
+        else:
+            self.q_value.line_edit.setText(str(random_number))
+
+    def get_directory(self):
+        dir_path = QFileDialog.getExistingDirectory(
+            self, 'Select Directory', QtCore.QDir.currentPath()
+        )
+
+        if dir_path:
+            self.output_file.line_edit.setText(dir_path)
+
+    def build_params(self):
+        p = int(self.p_value.line_edit.text())
+        q = int(self.q_value.line_edit.text())
+        return [p, q]
