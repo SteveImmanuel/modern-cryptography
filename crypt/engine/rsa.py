@@ -1,48 +1,74 @@
 import math
+import pickle
+import os
 
 from typing import List
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.key import *
 from crypt.engine.data import *
 from crypt.utils.number_util import *
-from crypt.utils.string_util import *
+from crypt.utils.bytes_util import *
+from crypt.utils.file_util import *
+from crypt.constant import MAX_CHUNK_SIZE
 
 from main import Ui_MainWindow
 from PyQt5 import QtCore, QtWidgets, QtGui
+
 
 class RSA(BaseEngine):
     def encrypt(self, public_key: Key, plain_text: Data):
         n = public_key.value[0]
         e = public_key.value[1]
         block_size = get_block_size(n)
+        max_digit = get_digit_count(n)
 
-        if plain_text.type == DataType.TEXT:
-            block_text = group_string(plain_text.value, block_size)
-            block_text = map(string_to_int, block_text)
+        if plain_text.data_type == DataType.TEXT:
+            block_bytes = group_bytes(plain_text.value, block_size)
+            block_bytes = map(lambda x: bytes_to_int(x, True), block_bytes)
             result = []
-            for text in block_text:
-                cipher = pow(text, e, n)
-                result.append(str(cipher))
-            return ' '.join(result)
+            for element in block_bytes:
+                cipher = pow(element, e, n)
+                result.append(str(cipher).rjust(max_digit, '0'))
+            return ''.join(result)
         else:
-            raise NotImplementedError('Belum dibuat')
+            chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % block_size)
+            with open(plain_text.output_path, 'w') as out:
+                for chunk in load_file(plain_text.value, chunk_size):
+                    block_bytes = group_bytes(chunk, block_size)
+                    block_bytes = map(bytes_to_int, block_bytes)
+
+                    for element in block_bytes:
+                        cipher = pow(element, e, n)
+                        out.write(str(cipher).rjust(max_digit, '0'))
+            return True
 
     def decrypt(self, secret_key: Key, cipher_text: Data):
         n = secret_key.value[0]
         d = secret_key.value[1]
+        block_size = get_block_size(n)
+        max_digit = get_digit_count(n)
 
-        if cipher_text.type == DataType.TEXT:
-            block_text = cipher_text.value.split(' ')
-            block_text = map(int, block_text)
+        if cipher_text.data_type == DataType.TEXT:
+            block_bytes = group_bytes(cipher_text.value, max_digit)
+            block_bytes = map(int, block_bytes)
             result = []
-            for text in block_text:
-                cipher = pow(text, d, n)
-                result.append(int_to_string(cipher))
+            for element in block_bytes:
+                cipher = pow(element, d, n)
+                result.append(int_to_bytes(cipher, block_size, True))
             return ''.join(result)
         else:
-            raise NotImplementedError('Belum dibuat')
+            chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % max_digit)
+            with open(cipher_text.output_path, 'wb') as out:
+                for chunk in load_file(cipher_text.value, chunk_size):
+                    block_bytes = group_bytes(chunk, max_digit)
+                    block_bytes = map(int, block_bytes)
 
-    def generate_key(self, params: List[int], output_path: str):
+                    for element in block_bytes:
+                        cipher = pow(element, d, n)
+                        out.write(int_to_bytes(cipher, block_size))
+            return True
+
+    def generate_key(self, params: List[int], output_path: str = '.'):
         p, q = params
         n = p * q
         toitent_n = toitent(p) * toitent(q)
@@ -51,53 +77,35 @@ class RSA(BaseEngine):
                 e = i
                 break
         d = mod_inverse(e, toitent_n)
+
+        public_key = Key([n, e])
+        secret_key = Key([n, d])
+
+        with open(f'{output_path}/rsa.pub', 'wb') as out:
+            pickle.dump(public_key, out)
+
+        with open(f'{output_path}/rsa.pri', 'wb') as out:
+            pickle.dump(secret_key, out)
         return e, d, n
-
-    def render(self, window: Ui_MainWindow):
-        self.RSA_Key_Widget = QtWidgets.QWidget(window.customWidget)
-        self.RSA_Key_Widget.setObjectName("RSA_Key_Widget")
-        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.RSA_Key_Widget)
-        self.verticalLayout_6.setObjectName("verticalLayout_6")
-        self.widget = QtWidgets.QWidget(self.RSA_Key_Widget)
-        self.widget.setObjectName("widget")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.label = QtWidgets.QLabel(self.widget)
-        self.label.setObjectName("label")
-        self.horizontalLayout_3.addWidget(self.label)
-        self.P_Key_Text = QtWidgets.QLineEdit(self.widget)
-        self.P_Key_Text.setObjectName("P_Key_Text")
-        self.horizontalLayout_3.addWidget(self.P_Key_Text)
-        self.verticalLayout_6.addWidget(self.widget)
-        self.widget_2 = QtWidgets.QWidget(self.RSA_Key_Widget)
-        self.widget_2.setObjectName("widget_2")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.widget_2)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.label_2 = QtWidgets.QLabel(self.widget_2)
-        self.label_2.setObjectName("label_2")
-        self.horizontalLayout_4.addWidget(self.label_2)
-        self.Q_Key_Text = QtWidgets.QLineEdit(self.widget_2)
-        self.Q_Key_Text.setObjectName("Q_Key_Text")
-        self.horizontalLayout_4.addWidget(self.Q_Key_Text)
-        self.verticalLayout_6.addWidget(self.widget_2)
-        window.horizontalLayout_9.addWidget(self.RSA_Key_Widget)
-
-        self.retranslateUI()
-
-    def retranslateUI(self):
-        _translate = QtCore.QCoreApplication.translate
-        self.label.setText(_translate("MainWindow", "P"))
-        self.label_2.setText(_translate("MainWindow", "Q"))
 
 
 if __name__ == '__main__':
     rsa = RSA()
-    data = Data(DataType.TEXT, 'abcdeajdkasdkakdsasdnoqjwneoqiwjeqowijeqwoiejqwoejio')
-    e, d, n = rsa.generate_key([231, 491], 'a')
-    public_key = Key([n, e])
-    secret_key = Key([n, d])
+    data = Data(DataType.TEXT, 'a b c d e r t g d w q a d r')
+    p = generate_prime_number(10)
+    q = generate_prime_number(10)
+    rsa.generate_key([p, q])
+    public_key = rsa.load_key('rsa.pub')
+    secret_key = rsa.load_key('rsa.pri')
     result = rsa.encrypt(public_key, data)
     print(result)
     data = Data(DataType.TEXT, result)
     result = rsa.decrypt(secret_key, data)
     print(result)
+
+    # data = Data(DataType.FILE, 'pdf_big.pdf', 'enctestread')
+    # result = rsa.encrypt(public_key, data)
+    # print(result)
+    # data = Data(DataType.FILE, 'enctestread', 'decpdf_big.pdf')
+    # result = rsa.decrypt(secret_key, data)
+    # print(result)
