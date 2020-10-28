@@ -1,12 +1,15 @@
-import random
 import math
+import pickle
+import os
 
 from typing import List
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.key import *
 from crypt.engine.data import *
 from crypt.utils.number_util import *
-from crypt.utils.string_util import *
+from crypt.utils.bytes_util import *
+from crypt.utils.file_util import *
+from crypt.constant import MAX_CHUNK_SIZE
 
 from main import Ui_MainWindow
 from PyQt5 import QtCore, QtWidgets, QtGui
@@ -18,114 +21,114 @@ class Elgamal(BaseEngine):
         p = public_key.value[2]
 
         block_size = get_block_size(p)
+        max_digit = get_digit_count(p)
 
         if plain_text.type == DataType.TEXT:
-            block_text = group_string(plain_text.value, block_size)
-            block_text = map(string_to_int, block_text)
+            block_bytes = group_bytes(plain_text.value, block_size)
+            block_bytes = map(lambda x: bytes_to_int(x, True), block_bytes)
             result = []
-            for text in block_text:
-                k = random.randrange(1, p-1, 1)
+
+            for element in block_bytes:
+                k = generate_random_number(1, p-1)
                 a = pow(g,k,p)
+                b = (pow(y,k) * element) % p
 
-                b = (pow(y,k) * text) % p
-
-                result.append(str(a))
-                result.append(str(b))
-            return ' '.join(result)
+                result.append(str(a).rjust(max_digit, '0'))
+                result.append(str(b).rjust(max_digit, '0'))
+            return ''.join(result)
         else:
-            raise NotImplementedError('Belum dibuat')
+            chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % block_size)
+            with open(plain_text.output_path, 'w') as out:
+                for chunk in load_file(plain_text.value, chunk_size):
+                    block_bytes = group_bytes(chunk, block_size)
+                    block_bytes = map(bytes_to_int, block_bytes)
+
+                    for element in block_bytes:
+                        k = generate_random_number(1, p-1)
+                        a = pow(g,k,p)
+                        b = (pow(y,k) * element) % p
+                        out.write(str(a).rjust(max_digit, '0'))
+                        out.write(str(b).rjust(max_digit, '0'))
+            return True
 
     def decrypt(self, secret_key: Key, cipher_text: Data):
         x = secret_key.value[0]
         p = secret_key.value[1]
 
+        block_size = get_block_size(p)
+        max_digit = get_digit_count(p)
+
         if cipher_text.type == DataType.TEXT:
-            block_text = cipher_text.value.split(' ')
-            block_text = map(int, block_text)
+            block_bytes = group_bytes(cipher_text.value, max_digit)
+            block_bytes = map(int, block_bytes)
             result = []
 
-            idx = 1
+            next_element = True
             a = 0
             b = 0
-            
-            for text in block_text:
-                if (idx==1):
-                    a = text
-                    idx += 1
+            for element in block_bytes:
+                if (next_element):
+                    a = element
+                    next_element = False
                 else:
-                    b = text
+                    b = element
                     a_x_inverse = pow(a, p-1-x, p)
                     cipher = (b * a_x_inverse) % p
-                    result.append(int_to_string(cipher))
-                    idx = 1
+                    result.append(int_to_bytes(cipher, block_size, True))
+                    next_element = True
             return ''.join(result)
         else:
-            raise NotImplementedError('Belum dibuat')
+            chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % max_digit)
+            with open(cipher_text.output_path, 'wb') as out:
+                for chunk in load_file(cipher_text.value, chunk_size):
+                    block_bytes = group_bytes(chunk, max_digit)
+                    block_bytes = map(int, block_bytes)
 
-    def generate_key(self, params: List[int], output_path: str):
+                    next_element = True
+                    a = 0
+                    b = 0
+                    for element in block_bytes:
+                        if (next_element):
+                            a = element
+                            next_element = False
+                        else:
+                            b = element
+                            a_x_inverse = pow(a, p-1-x, p)
+                            cipher = (b * a_x_inverse) % p
+                            out.write(int_to_bytes(cipher, block_size))
+                            next_element = True
+            return True
+
+    def generate_key(self, params: List[int], output_path: str = "."):
         p, g, x = params
         y = pow(g,x,p)
 
+        public_key = Key([y, g, p])
+        secret_key = Key([x,p])
+
+        with open(f'{output_path}/elgamal.pub', 'wb') as out:
+            pickle.dump(public_key, out)
+
+        with open(f'{output_path}/elgamal.pri', 'wb') as out:
+            pickle.dump(secret_key, out)
+
         return g, p, x, y
-
-    def render(self, window: Ui_MainWindow):
-        self.Elgamal_Key_Widget = QtWidgets.QWidget(window.customWidget)
-        self.Elgamal_Key_Widget.setObjectName("Elgamal_Key_Widget")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.Elgamal_Key_Widget)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.widget1 = QtWidgets.QWidget(self.Elgamal_Key_Widget)
-        self.widget1.setObjectName("widget1")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.widget1)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.label = QtWidgets.QLabel(self.widget1)
-        self.label.setObjectName("label")
-        self.horizontalLayout_3.addWidget(self.label)
-        self.P_Key_Text = QtWidgets.QLineEdit(self.widget1)
-        self.P_Key_Text.setObjectName("P_Key_Text")
-        self.horizontalLayout_3.addWidget(self.P_Key_Text)
-        self.verticalLayout_2.addWidget(self.widget1)
-        self.widget2 = QtWidgets.QWidget(self.Elgamal_Key_Widget)
-        self.widget2.setObjectName("widget2")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.widget2)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.label_2 = QtWidgets.QLabel(self.widget2)
-        self.label_2.setObjectName("label_2")
-        self.horizontalLayout_4.addWidget(self.label_2)
-        self.G_Key_Text = QtWidgets.QLineEdit(self.widget2)
-        self.G_Key_Text.setObjectName("G_Key_Text")
-        self.horizontalLayout_4.addWidget(self.G_Key_Text)
-        self.verticalLayout_2.addWidget(self.widget2)
-        self.widget3 = QtWidgets.QWidget(self.Elgamal_Key_Widget)
-        self.widget3.setObjectName("widget3")
-        self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.widget3)
-        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        self.label_3 = QtWidgets.QLabel(self.widget3)
-        self.label_3.setObjectName("label_3")
-        self.horizontalLayout_5.addWidget(self.label_3)
-        self.X_Key_Text = QtWidgets.QLineEdit(self.widget3)
-        self.X_Key_Text.setObjectName("X_Key_Text")
-        self.horizontalLayout_5.addWidget(self.X_Key_Text)
-        self.verticalLayout_2.addWidget(self.widget3)
-        window.horizontalLayout_9.addWidget(self.Elgamal_Key_Widget)
-
-        self.retranslateUi()
-
-    def retranslateUi(self):
-        _translate = QtCore.QCoreApplication.translate
-        self.label.setText(_translate("Form", "P"))
-        self.label_2.setText(_translate("Form", "G"))
-        self.label_3.setText(_translate("Form", "X"))
 
 if __name__ == "__main__":
     elgamal = Elgamal()
-    data = Data(DataType.TEXT, 'abcdeajdkasdkakdsasdnoqjwneoqiwjeqowijeqwoiejqwoejio')
-    g, p, x, y = elgamal.generate_key([2357, 2, 1751], 'a')
-    public_key = Key([y, g, p])
-    secret_key = Key([x,p])
+    data = Data(DataType.TEXT, 'a b c d e r t g d w q a d r')
+    p = generate_prime_number(6)
+    print(p)
+    g = generate_random_number(1, p-1)
+    print(g)
+    x = generate_random_number(1, p-1)
+    print(x)
+    elgamal.generate_key([p, g, x])
+    public_key = elgamal.load_key('elgamal.pub')
+    secret_key = elgamal.load_key('elgamal.pri')
 
     result = elgamal.encrypt(public_key, data)
     print(result)
-
     data = Data(DataType.TEXT, result)
     result = elgamal.decrypt(secret_key, data)
     print(result)
