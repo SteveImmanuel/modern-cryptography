@@ -12,6 +12,14 @@ class FileCategory(Enum):
     PRIVATEKEY = 'privatekey'
 
 class Ui_MainWindow(object):
+    def __init__(self):
+        self.encrypt = RSA()
+        print("RSA")
+        self.encrypt_list = [
+            RSA(),
+            Elgamal()
+        ]
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
@@ -97,33 +105,13 @@ class Ui_MainWindow(object):
         self.Key_GroupBox.setObjectName("Key_GroupBox")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.Key_GroupBox)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.RSA_Key_Widget = QtWidgets.QWidget(self.Key_GroupBox)
-        self.RSA_Key_Widget.setObjectName("RSA_Key_Widget")
-        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.RSA_Key_Widget)
-        self.verticalLayout_6.setObjectName("verticalLayout_6")
-        self.widget = QtWidgets.QWidget(self.RSA_Key_Widget)
-        self.widget.setObjectName("widget")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.label = QtWidgets.QLabel(self.widget)
-        self.label.setObjectName("label")
-        self.horizontalLayout_3.addWidget(self.label)
-        self.P_Key_Text = QtWidgets.QLineEdit(self.widget)
-        self.P_Key_Text.setObjectName("P_Key_Text")
-        self.horizontalLayout_3.addWidget(self.P_Key_Text)
-        self.verticalLayout_6.addWidget(self.widget)
-        self.widget_2 = QtWidgets.QWidget(self.RSA_Key_Widget)
-        self.widget_2.setObjectName("widget_2")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.widget_2)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.label_2 = QtWidgets.QLabel(self.widget_2)
-        self.label_2.setObjectName("label_2")
-        self.horizontalLayout_4.addWidget(self.label_2)
-        self.Q_Key_Text = QtWidgets.QLineEdit(self.widget_2)
-        self.Q_Key_Text.setObjectName("Q_Key_Text")
-        self.horizontalLayout_4.addWidget(self.Q_Key_Text)
-        self.verticalLayout_6.addWidget(self.widget_2)
-        self.verticalLayout.addWidget(self.RSA_Key_Widget)
+
+        self.customWidget = QtWidgets.QWidget(self.Key_GroupBox)
+        self.customWidget.setObjectName("CustomWidget")
+        self.horizontalLayout_9 = QtWidgets.QHBoxLayout(self.customWidget)
+        self.horizontalLayout_9.setObjectName("horizontalLayout_9")
+        self.verticalLayout.addWidget(self.customWidget)
+
         self.GenerateKey_Button = QtWidgets.QPushButton(self.Key_GroupBox)
         self.GenerateKey_Button.setObjectName("GenerateKey_Button")
         self.verticalLayout.addWidget(self.GenerateKey_Button)
@@ -227,6 +215,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+        self.Encryption_Option.currentIndexChanged.connect(self.changeEncryption)
+
         #Open File Text Button Listener
         self.Open_Plaintext_Button.clicked.connect(self.openPlaintextButtonCallback)
         self.Open_Ciphertext_Button.clicked.connect(self.openCiphertextButtonCallback)
@@ -239,6 +229,8 @@ class Ui_MainWindow(object):
         self.Save_PublicKey_Button.clicked.connect(self.savePublicKeyButtonCallback)
         self.Save_PrivateKey_Button.clicked.connect(self.savePrivateKeyButtonCallback)
 
+        self.encrypt.render(self)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -249,8 +241,6 @@ class Ui_MainWindow(object):
         self.Save_Plaintext_Button.setText(_translate("MainWindow", "Save\nPlaintext\nFile"))
         self.Encrypt_Button.setText(_translate("MainWindow", "Encrypt"))
         self.Key_GroupBox.setTitle(_translate("MainWindow", "Key"))
-        self.label.setText(_translate("MainWindow", "P"))
-        self.label_2.setText(_translate("MainWindow", "Q"))
         self.GenerateKey_Button.setText(_translate("MainWindow", "Generate Key"))
         self.PublicKey_GroupBox.setTitle(_translate("MainWindow", "Public Key"))
         self.Open_PublicKey_Button.setText(_translate("MainWindow", "Open Key"))
@@ -262,6 +252,20 @@ class Ui_MainWindow(object):
         self.Open_Ciphertext_Button.setText(_translate("MainWindow", "Open\nCiphertext\nFile"))
         self.Save_Ciphertext_Button.setText(_translate("MainWindow", "Save\nCiphertext\nFile"))
         self.Decrypt_Button.setText(_translate("MainWindow", "Decrypt"))
+
+    def clean(self, layout):
+        for i in reversed(range(layout.count())):
+            item = layout.takeAt(i)
+            widget = item.widget()
+            if widget is not None:
+                widget.close()
+            else:
+                self.clean(item.layout())
+
+    def changeEncryption(self, idx: int):
+        self.clean(self.horizontalLayout_9)
+        self.encrypt = self.encrypt_list[idx]
+        self.encrypt.render(self)
 
     def openPlaintextButtonCallback(self):
         self.openFileText(FileCategory.PLAINTEXT)
