@@ -23,6 +23,11 @@ def generate_prime_number(n: int) -> int:
         if is_prime(candidate):
             return candidate
 
+def generate_random_number(min: int, max: int) -> int:
+    """
+    Generate random number between range [min, max)
+    """
+    return random.randrange(min, max, 1)
 
 def toitent(n: int) -> int:
     """
