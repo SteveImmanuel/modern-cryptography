@@ -30,4 +30,3 @@ class ConfigurationBox(QWidget):
 
         self.setLayout(self.layout)
         self.layout.setSpacing(20)
-        # self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)

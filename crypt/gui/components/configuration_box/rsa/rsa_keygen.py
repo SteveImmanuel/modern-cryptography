@@ -34,14 +34,6 @@ class RSAKeygen(BaseKeygen):
         else:
             self.q_value.line_edit.setText(str(random_number))
 
-    def get_directory(self):
-        dir_path = QFileDialog.getExistingDirectory(
-            self, 'Select Directory', QtCore.QDir.currentPath()
-        )
-
-        if dir_path:
-            self.output_file.line_edit.setText(dir_path)
-
     def build_params(self):
         p = int(self.p_value.line_edit.text())
         q = int(self.q_value.line_edit.text())
