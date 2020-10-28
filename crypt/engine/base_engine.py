@@ -1,3 +1,5 @@
+import pickle
+
 from abc import ABC, abstractmethod
 from crypt.engine.key import *
 from crypt.engine.data import *
@@ -16,11 +18,10 @@ class BaseEngine(ABC):
         pass
 
     @abstractmethod
-    def generate_key(self, params: List[int], output_path: str):
+    def generate_key(self, params: List[int], output_path: str = '.'):
         pass
 
-    def render(self, window):
-        pass
-
-    def retranslateUI(self):
-        pass
+    def load_key(self, key_path: str) -> Key:
+        with open(key_path, 'rb') as key_file:
+            key = pickle.load(key_file)
+        return key
