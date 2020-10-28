@@ -18,3 +18,9 @@ class BaseEngine(ABC):
     @abstractmethod
     def generate_key(self, params: List[int], output_path: str):
         pass
+
+    def render(self, window):
+        pass
+
+    def retranslateUI(self):
+        pass

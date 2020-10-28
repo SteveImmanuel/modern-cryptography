@@ -7,6 +7,8 @@ from crypt.engine.data import *
 from crypt.utils.number_util import *
 from crypt.utils.string_util import *
 
+from main import Ui_MainWindow
+from PyQt5 import QtCore, QtWidgets, QtGui
 
 class RSA(BaseEngine):
     def encrypt(self, public_key: Key, plain_text: Data):
@@ -50,6 +52,42 @@ class RSA(BaseEngine):
                 break
         d = mod_inverse(e, toitent_n)
         return e, d, n
+
+    def render(self, window: Ui_MainWindow):
+        self.RSA_Key_Widget = QtWidgets.QWidget(window.customWidget)
+        self.RSA_Key_Widget.setObjectName("RSA_Key_Widget")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.RSA_Key_Widget)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.widget = QtWidgets.QWidget(self.RSA_Key_Widget)
+        self.widget.setObjectName("widget")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.widget)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label = QtWidgets.QLabel(self.widget)
+        self.label.setObjectName("label")
+        self.horizontalLayout_3.addWidget(self.label)
+        self.P_Key_Text = QtWidgets.QLineEdit(self.widget)
+        self.P_Key_Text.setObjectName("P_Key_Text")
+        self.horizontalLayout_3.addWidget(self.P_Key_Text)
+        self.verticalLayout_6.addWidget(self.widget)
+        self.widget_2 = QtWidgets.QWidget(self.RSA_Key_Widget)
+        self.widget_2.setObjectName("widget_2")
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.widget_2)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.label_2 = QtWidgets.QLabel(self.widget_2)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_4.addWidget(self.label_2)
+        self.Q_Key_Text = QtWidgets.QLineEdit(self.widget_2)
+        self.Q_Key_Text.setObjectName("Q_Key_Text")
+        self.horizontalLayout_4.addWidget(self.Q_Key_Text)
+        self.verticalLayout_6.addWidget(self.widget_2)
+        window.horizontalLayout_9.addWidget(self.RSA_Key_Widget)
+
+        self.retranslateUI()
+
+    def retranslateUI(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.label.setText(_translate("MainWindow", "P"))
+        self.label_2.setText(_translate("MainWindow", "Q"))
 
 
 if __name__ == '__main__':
