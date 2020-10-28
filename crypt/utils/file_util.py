@@ -9,6 +9,14 @@ def load_file(filepath: str, chunk_size: int):
             buffer = file_in.read(chunk_size)
 
 
+def save_file(path: str, data: str):
+    """
+    Save file to path
+    """
+    with open(path, 'w') as file:
+        file.write(data)
+
+
 if __name__ == "__main__":
     for a in load_file('testread', 10):
         print(type(a))
