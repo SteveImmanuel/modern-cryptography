@@ -15,49 +15,55 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <widget class="QWidget" name="Elgamal_Key_Widget" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>P</string>
-        </property>
+       <widget class="QWidget" name="widget1" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>P</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="P_Key_Text"/>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="widget_2" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>G</string>
-        </property>
+       <widget class="QWidget" name="widget2" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>G</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="G_Key_Text"/>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_2"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="widget_3" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>X</string>
-        </property>
+       <widget class="QWidget" name="widget3" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>X</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="X_Key_Text"/>
+         </item>
+        </layout>
        </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit_3"/>
       </item>
      </layout>
     </widget>
