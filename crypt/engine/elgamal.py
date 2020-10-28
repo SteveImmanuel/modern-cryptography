@@ -11,8 +11,6 @@ from crypt.utils.bytes_util import *
 from crypt.utils.file_util import *
 from crypt.constant import MAX_CHUNK_SIZE
 
-from main import Ui_MainWindow
-from PyQt5 import QtCore, QtWidgets, QtGui
 
 class Elgamal(BaseEngine):
     def encrypt(self, public_key: Key, plain_text: Data):
@@ -29,9 +27,9 @@ class Elgamal(BaseEngine):
             result = []
 
             for element in block_bytes:
-                k = generate_random_number(1, p-1)
-                a = pow(g,k,p)
-                b = (pow(y,k) * element) % p
+                k = generate_random_number(1, p - 1)
+                a = pow(g, k, p)
+                b = (pow(y, k) * element) % p
 
                 result.append(str(a).rjust(max_digit, '0'))
                 result.append(str(b).rjust(max_digit, '0'))
@@ -44,9 +42,9 @@ class Elgamal(BaseEngine):
                     block_bytes = map(bytes_to_int, block_bytes)
 
                     for element in block_bytes:
-                        k = generate_random_number(1, p-1)
-                        a = pow(g,k,p)
-                        b = (pow(y,k) * element) % p
+                        k = generate_random_number(1, p - 1)
+                        a = pow(g, k, p)
+                        b = (pow(y, k) * element) % p
                         out.write(str(a).rjust(max_digit, '0'))
                         out.write(str(b).rjust(max_digit, '0'))
             return True
@@ -72,7 +70,7 @@ class Elgamal(BaseEngine):
                     next_element = False
                 else:
                     b = element
-                    a_x_inverse = pow(a, p-1-x, p)
+                    a_x_inverse = pow(a, p - 1 - x, p)
                     cipher = (b * a_x_inverse) % p
                     result.append(int_to_bytes(cipher, block_size, True))
                     next_element = True
@@ -93,7 +91,7 @@ class Elgamal(BaseEngine):
                             next_element = False
                         else:
                             b = element
-                            a_x_inverse = pow(a, p-1-x, p)
+                            a_x_inverse = pow(a, p - 1 - x, p)
                             cipher = (b * a_x_inverse) % p
                             out.write(int_to_bytes(cipher, block_size))
                             next_element = True
@@ -101,10 +99,10 @@ class Elgamal(BaseEngine):
 
     def generate_key(self, params: List[int], output_path: str = "."):
         p, g, x = params
-        y = pow(g,x,p)
+        y = pow(g, x, p)
 
         public_key = Key([y, g, p])
-        secret_key = Key([x,p])
+        secret_key = Key([x, p])
 
         with open(f'{output_path}/elgamal.pub', 'wb') as out:
             pickle.dump(public_key, out)
@@ -114,14 +112,15 @@ class Elgamal(BaseEngine):
 
         return g, p, x, y
 
+
 if __name__ == "__main__":
     elgamal = Elgamal()
     data = Data(DataType.TEXT, 'a b c d e r t g d w q a d r')
     p = generate_prime_number(6)
     print(p)
-    g = generate_random_number(1, p-1)
+    g = generate_random_number(1, p - 1)
     print(g)
-    x = generate_random_number(1, p-1)
+    x = generate_random_number(1, p - 1)
     print(x)
     elgamal.generate_key([p, g, x])
     public_key = elgamal.load_key('elgamal.pub')

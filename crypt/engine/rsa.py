@@ -11,9 +11,6 @@ from crypt.utils.bytes_util import *
 from crypt.utils.file_util import *
 from crypt.constant import MAX_CHUNK_SIZE
 
-from main import Ui_MainWindow
-from PyQt5 import QtCore, QtWidgets, QtGui
-
 
 class RSA(BaseEngine):
     def encrypt(self, public_key: Key, plain_text: Data):
