@@ -1,7 +1,15 @@
 import sys
+import mimetypes
 
 from crypt import *
+from enum import Enum
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+class FileCategory(Enum):
+    PLAINTEXT = 'plaintext'
+    CIPHERTEXT = 'ciphertext'
+    PUBLICKEY = 'publickey'
+    PRIVATEKEY = 'privatekey'
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -38,9 +46,9 @@ class Ui_MainWindow(object):
         self.Plaintext_GroupBox.setObjectName("Plaintext_GroupBox")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.Plaintext_GroupBox)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.PLaintext_Text = QtWidgets.QPlainTextEdit(self.Plaintext_GroupBox)
-        self.PLaintext_Text.setObjectName("PLaintext_Text")
-        self.verticalLayout_4.addWidget(self.PLaintext_Text)
+        self.Plaintext_Text = QtWidgets.QPlainTextEdit(self.Plaintext_GroupBox)
+        self.Plaintext_Text.setObjectName("Plaintext_Text")
+        self.verticalLayout_4.addWidget(self.Plaintext_Text)
         self.widget_5 = QtWidgets.QWidget(self.Plaintext_GroupBox)
         self.widget_5.setObjectName("widget_5")
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout(self.widget_5)
@@ -219,6 +227,18 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+        #Open File Text Button Listener
+        self.Open_Plaintext_Button.clicked.connect(self.openPlaintextButtonCallback)
+        self.Open_Ciphertext_Button.clicked.connect(self.openCiphertextButtonCallback)
+        self.Open_PublicKey_Button.clicked.connect(self.openPublicKeyButtonCallback)
+        self.Open_PrivateKey_Button.clicked.connect(self.openPrivateKeyButtonCallback)
+
+        #Save File Text Button Listener
+        self.Save_Plaintext_Button.clicked.connect(self.savePlaintextButtonCallback)
+        self.Save_Ciphertext_Button.clicked.connect(self.saveCiphertextButtonCallback)
+        self.Save_PublicKey_Button.clicked.connect(self.savePublicKeyButtonCallback)
+        self.Save_PrivateKey_Button.clicked.connect(self.savePrivateKeyButtonCallback)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -242,6 +262,69 @@ class Ui_MainWindow(object):
         self.Open_Ciphertext_Button.setText(_translate("MainWindow", "Open\nCiphertext\nFile"))
         self.Save_Ciphertext_Button.setText(_translate("MainWindow", "Save\nCiphertext\nFile"))
         self.Decrypt_Button.setText(_translate("MainWindow", "Decrypt"))
+
+    def openPlaintextButtonCallback(self):
+        self.openFileText(FileCategory.PLAINTEXT)
+
+    def openCiphertextButtonCallback(self):
+        self.openFileText(FileCategory.CIPHERTEXT)
+
+    def openPublicKeyButtonCallback(self):
+        self.openFileText(FileCategory.PUBLICKEY)
+
+    def openPrivateKeyButtonCallback(self):
+        self.openFileText(FileCategory.PRIVATEKEY)
+
+    def openFileText(self, data:FileCategory):
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(
+            None,
+            "Select Media File",
+            "",
+            "All Files (*)",
+        )
+        if fileName:
+            mime = mimetypes.guess_type(fileName)
+            print(mime)
+            if mime[0] and mime[0].split('/')[0] == 'text':
+                with open(fileName, 'r') as f:
+                    if data==FileCategory.PLAINTEXT:
+                        self.Plaintext_Text.setPlainText(f.read())
+                    elif data==FileCategory.CIPHERTEXT:
+                        self.CipherText_Text.setPlainText(f.read())
+                    elif data==FileCategory.PUBLICKEY:  
+                        self.PublicKey_Text.setPlainText(f.read())
+                    elif data==FileCategory.PRIVATEKEY:
+                        self.PrivateKey_Text.setPlainText(f.read())
+
+    def savePlaintextButtonCallback(self):
+        self.saveFileText(FileCategory.PLAINTEXT)
+
+    def saveCiphertextButtonCallback(self):
+        self.saveFileText(FileCategory.CIPHERTEXT)
+
+    def savePublicKeyButtonCallback(self):
+        self.saveFileText(FileCategory.PUBLICKEY)
+
+    def savePrivateKeyButtonCallback(self):
+        self.saveFileText(FileCategory.PRIVATEKEY)
+
+    def saveFileText(self, data:FileCategory):
+        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(
+            None,
+            "Select File to Save Output Text",
+            "",
+            "All Files (*)",
+        )
+        if fileName:
+            with open(fileName, 'w') as f:
+                if data==FileCategory.PLAINTEXT:
+                    f.write(self.Plaintext_Text.toPlainText())
+                elif data==FileCategory.CIPHERTEXT:
+                    f.write(self.CipherText_Text.toPlainText())
+                elif data==FileCategory.PUBLICKEY:  
+                    f.write(self.PublicKey_Text.toPlainText())
+                elif data==FileCategory.PRIVATEKEY:
+                    f.write(self.PrivateKey_Text.toPlainText())
 
 if __name__ == "__main__":
     #Try Main RSA
