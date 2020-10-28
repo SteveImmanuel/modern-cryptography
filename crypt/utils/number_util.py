@@ -1,42 +1,39 @@
 import math
+import random
 
 from typing import List
 from crypt.constant import *
 
 
 def is_relative_prime(a: int, b: int) -> bool:
-    """Check if two number relatively prime
-
-    Args:
-        a (int): any integer
-        b (int): any integer
-
-    Returns:
-        bool: is a and b relatively prime
+    """
+    Check if two number relatively prime
     """
     return math.gcd(a, b) == 1
 
 
+def generate_prime_number(n: int) -> int:
+    """
+    Generate prime number with n digits
+    """
+    start = 10**(n - 1) + 1  #make sure it's odd
+    end = 10**(n) - 1
+    while True:
+        candidate = random.randrange(start, end, 2)
+        if is_prime(candidate):
+            return candidate
+
+
 def toitent(n: int) -> int:
-    """Get toitent value of n. n must be a prime number.
-
-    Args:
-        n (int): prime number
-
-    Returns:
-        int: toitent of n
+    """
+    Get toitent value of n. n must be a prime number
     """
     return n - 1
 
 
 def is_prime(n: int) -> bool:
-    """Check if number prime. Only handles positive number.
-
-    Args:
-        n (int): any integer
-
-    Returns:
-        bool: is prime or not
+    """
+    Check if number prime. Only handles positive number
     """
     if (n % 2 == 0 and n > 2) or n <= 1:
         return False
@@ -47,27 +44,23 @@ def is_prime(n: int) -> bool:
 
 
 def get_block_size(n: int) -> int:
-    """Get biggest block size possible for n. Result will be clamped between 1 and MAX_BLOCK_SIZE
-
-    Args:
-        n (int): prime number
-
-    Returns:
-        int: block size in bytes
+    """
+    Get biggest block size possible for n. Result will be clamped between 1 and MAX_BLOCK_SIZE
     """
     return min(MAX_BLOCK_SIZE, max(1, (n.bit_length() - 1) // 8))
 
 
-def egcd(a: int, b: int) -> List[int]:
-    """Returns extended gcd of a and b in format gcd(a,b), x, y
-    where ax + by = gcb(a,b)
+def get_digit_count(n: int) -> int:
+    """
+    Returns digit count of a number
+    """
+    return len(str(n))
 
-    Args:
-        a (int): any integer
-        b (int): any integer
-    
-    Returns:
-        List[int]
+
+def egcd(a: int, b: int) -> List[int]:
+    """
+    Returns extended gcd of a and b in format gcd(a,b), x, y
+    where ax + by = gcb(a,b)
     """
     if a == 0:
         return b, 0, 1
@@ -77,15 +70,8 @@ def egcd(a: int, b: int) -> List[int]:
 
 
 def mod_inverse(e: int, n: int) -> int:
-    """Return inverse modulus of e in n so that ed = 1 mod n
-
-
-    Args:
-        e (int): any integer
-        n (int): any integer
-
-    Returns:
-        int
+    """
+    Return inverse modulus of e in n so that ed = 1 mod n
     """
     g, x, y = egcd(e, n)
     if g != 1:
