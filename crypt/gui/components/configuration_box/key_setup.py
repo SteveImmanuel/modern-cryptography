@@ -1,3 +1,4 @@
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QSpacerItem, QGroupBox
 
 from crypt.engine.key import *
@@ -14,12 +15,18 @@ class KeySetup(QGroupBox):
         self.layout = QVBoxLayout()
 
         self.key_input = KeyWidgetFactory.create_key_setup_widget(EngineType.RSA)
-
-        self.spacer = QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
         self.layout.addWidget(self.key_input)
-        self.layout.addSpacerItem(self.spacer)
         self.layout.setSpacing(20)
         self.setLayout(self.layout)
 
     def get_key(self, is_private: bool) -> Key:
         return self.key_input.build_key(is_private)
+
+    @pyqtSlot(object)
+    def on_update_key_setup_widget(self, engine_type: EngineType):
+        self.layout.removeWidget(self.key_input)
+
+        self.key_input.deleteLater()
+        self.key_input = KeyWidgetFactory.create_key_setup_widget(engine_type)
+
+        self.layout.addWidget(self.key_input)

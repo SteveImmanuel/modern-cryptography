@@ -10,7 +10,6 @@ from crypt.engine.key import *
 
 class ParamsSignal(QObject):
     engine_type = pyqtSignal(object)
-    output_type = pyqtSignal(object)
 
 
 class ModeType(Enum):
@@ -28,9 +27,7 @@ class EncryptionParms:
             EncryptionParms.__instance = self
             self.signal = ParamsSignal()
             self.mode = None
-            self.engine = None
             self.engine_type = EngineType.RSA
-            self.old_engine_type = None
 
     def print_info(self):
         print('***Encryption Parameters***')
@@ -39,14 +36,12 @@ class EncryptionParms:
         print('***************************')
 
     def update_engine_type(self, engine_type: EngineType):
-        self.old_engine_type = self.engine_type
         self.engine_type = engine_type
         self.signal.engine_type.emit(engine_type)
+        self.print_info()
 
     def get_engine(self) -> BaseEngine:
-        if self.engine_type != self.old_engine_type:
-            self.engine = EngineFactory.create_engine(self.engine_type)
-        return self.engine
+        return EngineFactory.create_engine(self.engine_type)
 
     @staticmethod
     def get_instance() -> EncryptionParms:

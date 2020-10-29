@@ -4,7 +4,7 @@ from PyQt5.QtCore import QSize
 from crypt.gui.components.configuration_box.keygen import Keygen
 from crypt.gui.components.configuration_box.key_setup import KeySetup
 from crypt.engine.engine_factory import EngineType
-
+from crypt.gui.encryption_parms import EncryptionParms
 
 class ConfigurationBox(QWidget):
     def __init__(self, parent: QWidget = None):
@@ -30,3 +30,8 @@ class ConfigurationBox(QWidget):
 
         self.setLayout(self.layout)
         self.layout.setSpacing(20)
+
+        self.combo_box.currentIndexChanged.connect(self.set_engine_type)
+
+    def set_engine_type(self, idx:int):
+        EncryptionParms.get_instance().update_engine_type(self.list_of_algorithm[idx])

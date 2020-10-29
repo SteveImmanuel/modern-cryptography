@@ -44,15 +44,11 @@ class MainWindow(QMainWindow):
         self.main_input.tab_string.output_string.btn_save_to_file.clicked.connect(self.save_to_file)
         self.main_input.tab_string.input_string.btn_load_from_file.clicked.connect(self.load_from_file)
 
-        output_conf_signal = EncryptionParms.get_instance().signal.output_type
-        # output_conf_slot = self.main_input.tab_string.output_string.on_change_format
-        # output_conf_signal.connect(output_conf_slot)
-
         engine_type_signal = EncryptionParms.get_instance().signal.engine_type
-        # engine_type_slot = self.configuration_box.encryption_box.on_update_key_widget
-        # engine_type_slot_2 = self.main_input.on_engine_change
-        # engine_type_signal.connect(engine_type_slot)
-        # engine_type_signal.connect(engine_type_slot_2)
+        engine_type_slot = self.configuration_box.keygen.on_update_keygen_widget
+        engine_type_slot_2 = self.configuration_box.key_setup.on_update_key_setup_widget
+        engine_type_signal.connect(engine_type_slot)
+        engine_type_signal.connect(engine_type_slot_2)
 
         self.configuration_box.keygen.btn_generate.clicked.connect(self.generate_key)
 

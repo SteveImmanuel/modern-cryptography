@@ -47,12 +47,14 @@ class Keygen(QGroupBox):
         self.show_dialog_window('Success', msg)
 
     @pyqtSlot(object)
-    def on_update_key_widget(self, engine_type: EngineType):
+    def on_update_keygen_widget(self, engine_type: EngineType):
         self.layout.removeWidget(self.key_input)
+        self.layout.removeWidget(self.output_file)
         self.layout.removeWidget(self.btn_generate)
 
         self.key_input.deleteLater()
-        self.key_input = KeyWidgetFactory.create_widget(engine_type)
+        self.key_input = KeyWidgetFactory.create_keygen_widget(engine_type)
 
         self.layout.addWidget(self.key_input)
+        self.layout.removeWidget(self.output_file)
         self.layout.addWidget(self.btn_generate)

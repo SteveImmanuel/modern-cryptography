@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton, QFileDialog
+from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton, \
+    QFileDialog
 from PyQt5 import QtCore
 
 from crypt.gui.components.configuration_box.base_keygen import BaseKeygen

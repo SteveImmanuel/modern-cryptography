@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton, QFileDialog
+from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton, \
+    QFileDialog
 from PyQt5 import QtCore
 
 from crypt.gui.components.configuration_box.base_keygen import BaseKeygen
 from crypt.gui.components.configuration_box.edit_with_button import EditWithButton
 from crypt.engine.key import *
-from crypt.utils.number_util import generate_prime_number
+from crypt.utils.number_util import *
 
 
 class ElgamalKeygen(BaseKeygen):
@@ -38,8 +39,8 @@ class ElgamalKeygen(BaseKeygen):
         try:
             p = int(self.p_value.line_edit.text())
 
-            if(is_prime(p)):
-                random_number = generate_random_number(1, p-1)
+            if is_prime(p):
+                random_number = generate_random_number(1, p - 1)
                 if is_g:
                     self.g_value.line_edit.setText(str(random_number))
                 else:
