@@ -112,7 +112,7 @@ class Elgamal(BaseEngine):
 if __name__ == "__main__":
     elgamal = Elgamal()
     data = Data(DataType.TEXT, 'a b c d e r t g d w q a d r')
-    p = generate_prime_number(10)
+    p = generate_prime_number(15)
     print(p)
     g = generate_random_number(1, p - 1)
     print(g)

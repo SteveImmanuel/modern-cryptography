@@ -30,7 +30,7 @@ class ElgamalKeygen(BaseKeygen):
         self.x_value.btn_random.clicked.connect(lambda: self.randomize_number(is_g=False))
 
     def randomize_prime(self):
-        random_prime = generate_prime_number(9)
+        random_prime = generate_prime_number(12)
         self.p_value.line_edit.setText(str(random_prime))
 
     def randomize_number(self, is_g: bool):
