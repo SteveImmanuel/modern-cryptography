@@ -18,6 +18,15 @@ class MainInput(QTabWidget):
         self.addTab(self.tab_string, 'String Input')
         self.addTab(self.tab_file, 'File Input')
         self.setCurrentIndex(0)
+        self.currentChanged.connect(self.update_mode)
+
+    def update_mode(self, idx:int):
+        if idx==0:
+            self.tab_string.input_mode.switch_mode()
+            self.tab_string.input_mode.switch_mode()
+        else:
+            self.tab_file.input_mode.switch_mode()
+            self.tab_file.input_mode.switch_mode()
 
     def get_data(self) -> Data:
         if self.currentWidget() == self.tab_string:
