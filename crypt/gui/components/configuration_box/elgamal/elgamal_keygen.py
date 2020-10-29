@@ -31,7 +31,6 @@ class ElgamalKeygen(BaseKeygen):
 
     def randomize_prime(self):
         random_prime = generate_prime_number(9)
-        print(random_prime)
         self.p_value.line_edit.setText(str(random_prime))
 
     def randomize_number(self, is_g: bool):
