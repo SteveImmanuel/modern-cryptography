@@ -3,11 +3,13 @@ from enum import Enum
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.elgamal import Elgamal
 from crypt.engine.rsa import RSA
+from crypt.engine.diffie_hellman import DiffieHellman
 
 
 class EngineType(Enum):
     RSA = 'RSA (Rivest-Shamir-Adleman)'
     ELGAMAL = 'El-Gamal'
+    DH = 'Diffie-Hellman with 8-Series Cipher'
 
     @staticmethod
     def list():
@@ -21,5 +23,7 @@ class EngineFactory():
             return RSA()
         elif engine_type == EngineType.ELGAMAL:
             return Elgamal()
+        elif engine_type == EngineType.DH:
+            return DiffieHellman()
         else:
             raise Exception('Engine not found')

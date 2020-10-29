@@ -18,7 +18,7 @@ class BaseEngine(ABC):
         pass
 
     @abstractmethod
-    def generate_key(self, params: List[int], output_path: str = '.'):
+    def generate_key(self, params: List[int], output_path: str = '.') -> str:
         pass
 
     def load_key(self, key_path: str) -> Key:
