@@ -16,9 +16,9 @@ class RSAKeySetup(BaseKeySetup):
     def setup_ui(self):
         self.lbl_private = QLabel('Private Key')
         self.lbl_public = QLabel('Public Key')
-        self.btn_browse_private = QPushButton('Load From File')
+        self.btn_browse_private = QPushButton('Load from File')
         self.btn_browse_private.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        self.btn_browse_public = QPushButton('Load From File')
+        self.btn_browse_public = QPushButton('Load from File')
         self.btn_browse_public.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.d_private = QLineEdit()
         self.d_private.setPlaceholderText('d value')

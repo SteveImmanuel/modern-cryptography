@@ -62,7 +62,7 @@ class RSA(BaseEngine):
                         out.write(int_to_bytes(cipher, block_size))
             return f'Execution complete. File saved in {cipher_text.output_path}.'
 
-    def generate_key(self, params: List[int], output_path: str = '.'):
+    def generate_key(self, params: List[int], output_path: str = '.') -> str:
         p, q = params
         n = p * q
         toitent_n = toitent(p) * toitent(q)
