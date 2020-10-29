@@ -12,5 +12,5 @@ class BaseKeySetup(QWidget):
         pass
 
     @abstractmethod
-    def apply_key(self, key: Key):
+    def apply_key(self, key: Key, is_private: bool):
         pass
