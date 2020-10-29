@@ -21,7 +21,7 @@ class Elgamal(BaseEngine):
         block_size = get_block_size(p)
         max_digit = get_digit_count(p)
 
-        if plain_text.type == DataType.TEXT:
+        if plain_text.data_type == DataType.TEXT:
             block_bytes = group_bytes(plain_text.value, block_size)
             block_bytes = map(lambda x: bytes_to_int(x, True), block_bytes)
             result = []
@@ -56,7 +56,7 @@ class Elgamal(BaseEngine):
         block_size = get_block_size(p)
         max_digit = get_digit_count(p)
 
-        if cipher_text.type == DataType.TEXT:
+        if cipher_text.data_type == DataType.TEXT:
             block_bytes = group_bytes(cipher_text.value, max_digit)
             block_bytes = map(int, block_bytes)
             result = []
