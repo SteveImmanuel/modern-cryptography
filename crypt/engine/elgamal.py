@@ -1,19 +1,15 @@
-import math
 import pickle
-import os
 
-from typing import List
+from crypt.constant import MAX_CHUNK_SIZE
 from crypt.engine.base_engine import BaseEngine
-from crypt.engine.key import *
 from crypt.engine.data import *
-from crypt.utils.number_util import *
+from crypt.engine.key import *
 from crypt.utils.bytes_util import *
 from crypt.utils.file_util import *
-from crypt.constant import MAX_CHUNK_SIZE
-
+from crypt.utils.number_util import *
 
 class Elgamal(BaseEngine):
-    def encrypt(self, public_key: Key, plain_text: Data):
+    def encrypt(self, public_key: Key, plain_text: Data) -> str:
         y = public_key.value[0]
         g = public_key.value[1]
         p = public_key.value[2]
@@ -47,9 +43,9 @@ class Elgamal(BaseEngine):
                         b = (pow(y, k) * element) % p
                         out.write(str(a).rjust(max_digit, '0'))
                         out.write(str(b).rjust(max_digit, '0'))
-            return True
+            return f'Execution complete. File saved in {plain_text.output_path}.'
 
-    def decrypt(self, secret_key: Key, cipher_text: Data):
+    def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
         x = secret_key.value[0]
         p = secret_key.value[1]
 
@@ -95,7 +91,7 @@ class Elgamal(BaseEngine):
                             cipher = (b * a_x_inverse) % p
                             out.write(int_to_bytes(cipher, block_size))
                             next_element = True
-            return True
+            return f'Execution complete. File saved in {cipher_text.output_path}.'
 
     def generate_key(self, params: List[int], output_path: str = "."):
         p, g, x = params
@@ -110,7 +106,7 @@ class Elgamal(BaseEngine):
         with open(f'{output_path}/elgamal.pri', 'wb') as out:
             pickle.dump(secret_key, out)
 
-        return g, p, x, y
+        return f'Keys elgamal.pub and elgamal.pri saved in {output_path}'
 
 
 if __name__ == "__main__":
