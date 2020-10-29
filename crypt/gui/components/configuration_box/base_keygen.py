@@ -1,6 +1,7 @@
-from abc import ABC, abstractmethod
-from typing import List
+from abc import abstractmethod
+
 from PyQt5.QtWidgets import QWidget
+
 from crypt.engine.key import *
 
 

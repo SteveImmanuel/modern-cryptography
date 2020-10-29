@@ -1,10 +1,8 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
-from crypt.gui.components.main_input.input_string import InputString
-from crypt.gui.components.main_input.input_mode import InputMode
-from crypt.gui.encryption_parms import EncryptionParms
 from crypt.engine.data import *
+from crypt.gui.components.main_input.input_mode import InputMode
+from crypt.gui.components.main_input.input_string import InputString
 
 
 class TabString(QWidget):

@@ -1,11 +1,10 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton, QLabel, QLineEdit, QFileDialog
 from PyQt5 import QtCore
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton, QLabel, QLineEdit, \
+    QFileDialog
 
-from crypt.gui.encryption_parms import EncryptionParms
-from crypt.gui.components.configuration_box.base_key_setup import BaseKeySetup
-from crypt.gui.components.configuration_box.edit_with_button import EditWithButton
-from crypt.gui.components.main_input.input_file import InputFile
 from crypt.engine.key import *
+from crypt.gui.components.configuration_box.base_key_setup import BaseKeySetup
+from crypt.gui.encryption_parms import EncryptionParms
 
 
 class RSAKeySetup(BaseKeySetup):

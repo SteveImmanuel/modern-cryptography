@@ -1,10 +1,7 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton, \
-    QFileDialog
-from PyQt5 import QtCore
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QSpacerItem
 
 from crypt.gui.components.configuration_box.base_keygen import BaseKeygen
 from crypt.gui.components.configuration_box.edit_with_button import EditWithButton
-from crypt.engine.key import *
 from crypt.utils.number_util import generate_prime_number
 
 

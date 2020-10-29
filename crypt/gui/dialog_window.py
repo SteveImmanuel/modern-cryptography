@@ -1,5 +1,4 @@
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QWidget, QLabel, QPushButton, QMainWindow, QApplication, QDialog, QDialogButtonBox, QSizePolicy
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QApplication, QDialog, QDialogButtonBox, QSizePolicy
 
 
 class DialogWindow(QDialog):

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QLineEdit, QSizePolicy, QHBoxLayout, QPushButton
 
 
 class EditWithButton(QWidget):

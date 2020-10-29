@@ -1,11 +1,10 @@
 from __future__ import annotations
-from enum import Enum
+
 from PyQt5.QtCore import pyqtSignal, QObject
 
-from crypt.engine.engine_factory import *
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.data import *
-from crypt.engine.key import *
+from crypt.engine.engine_factory import *
 
 
 class ParamsSignal(QObject):

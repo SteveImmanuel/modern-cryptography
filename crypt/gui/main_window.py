@@ -1,17 +1,15 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QFileDialog
-from PyQt5.QtCore import QSize, QThreadPool
+from multiprocessing import cpu_count
 
-from crypt.gui.components.main_input import MainInput
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import QThreadPool
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QFileDialog
+
 from crypt.gui.components.configuration_box import ConfigurationBox
+from crypt.gui.components.main_input import MainInput
 from crypt.gui.dialog_window import DialogWindow
 from crypt.gui.encryption_parms import EncryptionParms, ModeType
 from crypt.gui.worker import Worker
-from crypt.engine.engine_factory import EngineType
-from crypt.engine.data import *
 from crypt.utils.file_util import *
-
-from multiprocessing import cpu_count
 
 
 class MainWindow(QMainWindow):

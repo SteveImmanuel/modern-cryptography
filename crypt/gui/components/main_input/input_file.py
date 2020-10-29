@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy
-from PyQt5.QtCore import QSize
 
 
 class InputFile(QWidget):

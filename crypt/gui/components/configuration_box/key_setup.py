@@ -1,5 +1,5 @@
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QSpacerItem, QGroupBox
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGroupBox
 
 from crypt.engine.key import *
 from crypt.gui.components.configuration_box.key_widget_factory import *

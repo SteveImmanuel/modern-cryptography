@@ -1,10 +1,8 @@
-from PyQt5.QtWidgets import QGroupBox, QWidget, QVBoxLayout, QTabWidget, QSizePolicy
-from PyQt5.QtCore import QSize, pyqtSlot
+from PyQt5.QtWidgets import QWidget, QTabWidget
 
+from crypt.engine.data import Data
 from crypt.gui.components.main_input.tab_file import TabFile
 from crypt.gui.components.main_input.tab_string import TabString
-from crypt.engine.engine_factory import EngineType
-from crypt.engine.data import Data
 
 
 class MainInput(QTabWidget):

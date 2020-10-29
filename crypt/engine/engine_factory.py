@@ -1,9 +1,9 @@
 from enum import Enum
 
 from crypt.engine.base_engine import BaseEngine
+from crypt.engine.diffie_hellman import DiffieHellman
 from crypt.engine.elgamal import Elgamal
 from crypt.engine.rsa import RSA
-from crypt.engine.diffie_hellman import DiffieHellman
 
 
 class EngineType(Enum):

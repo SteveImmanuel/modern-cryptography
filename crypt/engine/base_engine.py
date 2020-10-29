@@ -1,8 +1,8 @@
 import pickle
-
 from abc import ABC, abstractmethod
-from crypt.engine.key import *
+
 from crypt.engine.data import *
+from crypt.engine.key import *
 
 
 class BaseEngine(ABC):

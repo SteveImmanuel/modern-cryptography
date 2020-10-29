@@ -1,12 +1,12 @@
 import pickle
 
-from crypt.constant import MAX_CHUNK_SIZE
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.data import *
 from crypt.engine.key import *
 from crypt.utils.bytes_util import *
 from crypt.utils.file_util import *
 from crypt.utils.number_util import *
+
 
 class Elgamal(BaseEngine):
     def encrypt(self, public_key: Key, plain_text: Data) -> str:
