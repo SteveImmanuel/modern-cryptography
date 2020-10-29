@@ -1,5 +1,6 @@
 import pickle
 import time
+import os
 
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.data import *
@@ -37,7 +38,8 @@ class RSA(BaseEngine):
                         out.write(str(cipher).rjust(max_digit, '0'))
 
             execution_time = time.time() - start_time
-            return f'Execution complete. File saved in {plain_text.output_path}. \n Time execution  = {execution_time} seconds'
+            file_size = os.stat(plain_text.output_path).st_size
+            return f'Execution complete. File saved in {plain_text.output_path}.\n\nTime execution = {execution_time} seconds\nFile size = {file_size} bytes'
 
     def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
         n = secret_key.value[0]
@@ -66,7 +68,8 @@ class RSA(BaseEngine):
                         out.write(int_to_bytes(cipher, block_size))
 
             execution_time = time.time() - start_time
-            return f'Execution complete. File saved in {cipher_text.output_path}. \n Time execution  = {execution_time} seconds'
+            file_size = os.stat(cipher_text.output_path).st_size
+            return f'Execution complete. File saved in {cipher_text.output_path}.\n\nTime execution = {execution_time} seconds\nFile size = {file_size} bytes'
 
     def generate_key(self, params: List[int], output_path: str = '.') -> str:
         p, q = params
