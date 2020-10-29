@@ -56,5 +56,5 @@ class Keygen(QGroupBox):
         self.key_input = KeyWidgetFactory.create_keygen_widget(engine_type)
 
         self.layout.addWidget(self.key_input)
-        self.layout.removeWidget(self.output_file)
+        self.layout.addWidget(self.output_file)
         self.layout.addWidget(self.btn_generate)
