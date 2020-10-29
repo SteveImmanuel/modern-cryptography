@@ -25,7 +25,7 @@ class Elgamal(BaseEngine):
             for element in block_bytes:
                 k = generate_random_number(1, p - 1)
                 a = pow(g, k, p)
-                b = (pow(y, k) * element) % p
+                b = (pow(y, k, p) * (element % p)) % p
 
                 result.append(str(a).rjust(max_digit, '0'))
                 result.append(str(b).rjust(max_digit, '0'))
@@ -40,7 +40,7 @@ class Elgamal(BaseEngine):
                     for element in block_bytes:
                         k = generate_random_number(1, p - 1)
                         a = pow(g, k, p)
-                        b = (pow(y, k) * element) % p
+                        b = (pow(y, k, p) * (element % p)) % p
                         out.write(str(a).rjust(max_digit, '0'))
                         out.write(str(b).rjust(max_digit, '0'))
             return f'Execution complete. File saved in {plain_text.output_path}.'
@@ -67,7 +67,7 @@ class Elgamal(BaseEngine):
                 else:
                     b = element
                     a_x_inverse = pow(a, p - 1 - x, p)
-                    cipher = (b * a_x_inverse) % p
+                    cipher = ((b % p) * (a_x_inverse % p)) % p
                     result.append(int_to_bytes(cipher, block_size, True))
                     next_element = True
             return ''.join(result)
@@ -88,7 +88,7 @@ class Elgamal(BaseEngine):
                         else:
                             b = element
                             a_x_inverse = pow(a, p - 1 - x, p)
-                            cipher = (b * a_x_inverse) % p
+                            cipher = ((b % p) * (a_x_inverse % p)) % p
                             out.write(int_to_bytes(cipher, block_size))
                             next_element = True
             return f'Execution complete. File saved in {cipher_text.output_path}.'
@@ -112,7 +112,7 @@ class Elgamal(BaseEngine):
 if __name__ == "__main__":
     elgamal = Elgamal()
     data = Data(DataType.TEXT, 'a b c d e r t g d w q a d r')
-    p = generate_prime_number(6)
+    p = generate_prime_number(10)
     print(p)
     g = generate_random_number(1, p - 1)
     print(g)
