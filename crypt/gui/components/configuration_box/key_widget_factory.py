@@ -5,6 +5,9 @@ from crypt.gui.components.configuration_box.rsa.rsa_key_setup import RSAKeySetup
 from crypt.gui.components.configuration_box.rsa.rsa_keygen import RSAKeygen
 from crypt.gui.components.configuration_box.elgamal.elgamal_key_setup import ElgamalKeySetup
 from crypt.gui.components.configuration_box.elgamal.elgamal_keygen import ElgamalKeygen
+from crypt.gui.components.configuration_box.dh.dh_key_setup import DHKeySetup
+from crypt.gui.components.configuration_box.dh.dh_keygen import DHKeygen
+
 
 class KeyWidgetFactory():
     @staticmethod
@@ -13,8 +16,10 @@ class KeyWidgetFactory():
             return RSAKeygen()
         elif engine == EngineType.ELGAMAL:
             return ElgamalKeygen()
+        elif engine == EngineType.DH:
+            return DHKeygen()
         else:
-            return RSAKeygen()
+            raise RuntimeError('Widget for engine type not found')
 
     @staticmethod
     def create_key_setup_widget(engine: EngineType) -> BaseKeySetup:
@@ -22,5 +27,7 @@ class KeyWidgetFactory():
             return RSAKeySetup()
         elif engine == EngineType.ELGAMAL:
             return ElgamalKeySetup()
+        elif engine == EngineType.DH:
+            return DHKeySetup()
         else:
-            return RSAKeySetup()
+            raise RuntimeError('Widget for engine type not found')
