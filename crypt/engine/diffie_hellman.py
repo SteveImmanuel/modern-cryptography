@@ -42,3 +42,11 @@ class DiffieHellman(BaseEngine):
             pickle.dump(key, out)
 
         return f'Session key dh.ses saved in {output_path}'
+
+if __name__ == '__main__':
+    dh = DiffieHellman()
+    key = Key([1232345])
+    data = Data(DataType.TEXT, 'test123123njakafs')
+    result = dh.encrypt(key, data)
+    result = dh.decrypt(key, Data(DataType.TEXT, result))
+    print(result)
