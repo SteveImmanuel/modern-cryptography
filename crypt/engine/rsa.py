@@ -1,4 +1,5 @@
 import pickle
+import time
 
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.data import *
@@ -24,6 +25,7 @@ class RSA(BaseEngine):
                 result.append(str(cipher).rjust(max_digit, '0'))
             return ''.join(result)
         else:
+            start_time = time.time()
             chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % block_size)
             with open(plain_text.output_path, 'w') as out:
                 for chunk in load_file(plain_text.value, chunk_size):
@@ -33,7 +35,9 @@ class RSA(BaseEngine):
                     for element in block_bytes:
                         cipher = pow(element, e, n)
                         out.write(str(cipher).rjust(max_digit, '0'))
-            return f'Execution complete. File saved in {plain_text.output_path}.'
+
+            execution_time = time.time() - start_time
+            return f'Execution complete. File saved in {plain_text.output_path}. \n Time execution  = {execution_time} seconds'
 
     def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
         n = secret_key.value[0]
@@ -50,6 +54,7 @@ class RSA(BaseEngine):
                 result.append(int_to_bytes(cipher, block_size, True))
             return ''.join(result)
         else:
+            start_time = time.time()
             chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % max_digit)
             with open(cipher_text.output_path, 'wb') as out:
                 for chunk in load_file(cipher_text.value, chunk_size):
@@ -59,7 +64,9 @@ class RSA(BaseEngine):
                     for element in block_bytes:
                         cipher = pow(element, d, n)
                         out.write(int_to_bytes(cipher, block_size))
-            return f'Execution complete. File saved in {cipher_text.output_path}.'
+
+            execution_time = time.time() - start_time
+            return f'Execution complete. File saved in {cipher_text.output_path}. \n Time execution  = {execution_time} seconds'
 
     def generate_key(self, params: List[int], output_path: str = '.') -> str:
         p, q = params
