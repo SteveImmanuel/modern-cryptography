@@ -10,11 +10,11 @@ class BaseEngine(ABC):
         super().__init__()
 
     @abstractmethod
-    def encrypt(self, public_key: Key, plain_text: Data):
+    def encrypt(self, public_key: Key, plain_text: Data) -> str:
         pass
 
     @abstractmethod
-    def decrypt(self, secret_key: Key, cipher_text: Data):
+    def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
         pass
 
     @abstractmethod

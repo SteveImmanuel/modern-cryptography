@@ -1,19 +1,16 @@
-import math
 import pickle
-import os
 
-from typing import List
+from crypt.constant import MAX_CHUNK_SIZE
 from crypt.engine.base_engine import BaseEngine
-from crypt.engine.key import *
 from crypt.engine.data import *
-from crypt.utils.number_util import *
+from crypt.engine.key import *
 from crypt.utils.bytes_util import *
 from crypt.utils.file_util import *
-from crypt.constant import MAX_CHUNK_SIZE
+from crypt.utils.number_util import *
 
 
 class RSA(BaseEngine):
-    def encrypt(self, public_key: Key, plain_text: Data):
+    def encrypt(self, public_key: Key, plain_text: Data) -> str:
         n = public_key.value[0]
         e = public_key.value[1]
         block_size = get_block_size(n)
@@ -37,9 +34,9 @@ class RSA(BaseEngine):
                     for element in block_bytes:
                         cipher = pow(element, e, n)
                         out.write(str(cipher).rjust(max_digit, '0'))
-            return True
+            return f'Execution complete. File saved in {plain_text.output_path}.'
 
-    def decrypt(self, secret_key: Key, cipher_text: Data):
+    def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
         n = secret_key.value[0]
         d = secret_key.value[1]
         block_size = get_block_size(n)
@@ -63,7 +60,7 @@ class RSA(BaseEngine):
                     for element in block_bytes:
                         cipher = pow(element, d, n)
                         out.write(int_to_bytes(cipher, block_size))
-            return True
+            return f'Execution complete. File saved in {cipher_text.output_path}.'
 
     def generate_key(self, params: List[int], output_path: str = '.'):
         p, q = params
