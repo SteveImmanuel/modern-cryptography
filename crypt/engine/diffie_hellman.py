@@ -11,7 +11,7 @@ class DiffieHellman(BaseEngine):
     def encrypt(self, public_key: Key, plain_text: Data) -> str:
         key = public_key.value[0]
         if plain_text.data_type != DataType.TEXT:
-            raise NotImplemented('Current implementation only support string input')
+            raise Exception('Current implementation only support string input')
 
         cbc = CBC(str(key))
         result = cbc.encipher(plain_text.value)
@@ -20,7 +20,7 @@ class DiffieHellman(BaseEngine):
     def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
         key = secret_key.value[0]
         if cipher_text.data_type != DataType.TEXT:
-            raise NotImplemented('Current implementation only support string input')
+            raise Exception('Current implementation only support string input')
 
         cbc = CBC(str(key))
         result = cbc.decipher(cipher_text.value)
