@@ -8,6 +8,14 @@ def load_file(filepath: str, chunk_size: int):
             yield buffer
             buffer = file_in.read(chunk_size)
 
+def read_file(path: str) -> str:
+    """
+    Read whole file directly
+    """
+    with open(path, 'r') as file:
+        data = file.read()
+
+    return data
 
 def save_file(path: str, data: str):
     """
