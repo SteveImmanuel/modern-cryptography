@@ -42,9 +42,7 @@ class MainWindow(QMainWindow):
         self.main_input.tab_file.input_mode.btn_execute.clicked.connect(self.execute_file)
 
         self.main_input.tab_string.output_string.btn_save_to_file.clicked.connect(self.save_to_file)
-        self.main_input.tab_string.input_string.btn_load_from_file.clicked.connect(
-            self.load_from_file
-        )
+        self.main_input.tab_string.input_string.btn_load_from_file.clicked.connect(self.load_from_file)
 
         output_conf_signal = EncryptionParms.get_instance().signal.output_type
         # output_conf_slot = self.main_input.tab_string.output_string.on_change_format
@@ -55,6 +53,8 @@ class MainWindow(QMainWindow):
         # engine_type_slot_2 = self.main_input.on_engine_change
         # engine_type_signal.connect(engine_type_slot)
         # engine_type_signal.connect(engine_type_slot_2)
+
+        self.configuration_box.keygen.btn_generate.clicked.connect(self.generate_key)
 
     def show_dialog_window(self, title, msg):
         DialogWindow(title, msg).exec_()
@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
             self, 'Load Text', QtCore.QDir.currentPath(), '*.txt'
         )
         if filepath:
-            worker = Worker(FileUtil.read_file, filepath)
+            worker = Worker(read_file, filepath)
             worker.signals.error.connect(self.show_error_dialog)
             worker.signals.result.connect(self.main_input.tab_string.input_string.on_load_from_file)
             QThreadPool.globalInstance().start(worker)
@@ -79,27 +79,33 @@ class MainWindow(QMainWindow):
         filepath, _ = QFileDialog.getSaveFileName(self, 'Save Text', QtCore.QDir.currentPath(), '*')
         if filepath:
             worker = Worker(
-                FileUtil.save_file, filepath,
+                save_file, filepath,
                 self.main_input.tab_string.output_string.text_edit.toPlainText()
             )
             worker.signals.error.connect(self.show_error_dialog)
             worker.signals.result.connect(lambda: self.show_success_window("Success saving file"))
             QThreadPool.globalInstance().start(worker)
 
+    def generate_key(self):
+        engine = self.enc_parms.get_engine()
+        output_path = self.configuration_box.keygen.output_file.line_edit.text()
+        params = self.configuration_box.keygen.key_input.build_params()
+        worker = Worker(engine.generate_key, params, output_path)
+        worker.signals.error.connect(self.show_error_dialog)
+        worker.signals.result.connect(self.show_success_window)
+        QThreadPool.globalInstance().start(worker)
+
     def prepare_exec_fun(self):
         mode = self.enc_parms.mode
         engine = self.enc_parms.get_engine()
-
-        key = self.configuration_box.encryption_box.get_key()
         data = self.main_input.get_data()
-
-        key = engine.complete_key(data, key)
-        self.configuration_box.encryption_box.apply_key(key)
 
         if mode == ModeType.ENCRYPT:
             fn = engine.encrypt
+            key = self.configuration_box.key_setup.get_key(is_private=False)
         else:
             fn = engine.decrypt
+            key = self.configuration_box.key_setup.get_key(is_private=True)
 
         return fn, key, data
 
@@ -110,7 +116,7 @@ class MainWindow(QMainWindow):
             self.show_error_dialog(str(e))
             return
 
-        worker = Worker(fn, data, key)
+        worker = Worker(fn, key, data)
         worker.signals.error.connect(self.show_error_dialog)
         worker.signals.result.connect(self.main_input.tab_string.output_string.on_result_update)
         QThreadPool.globalInstance().start(worker)
@@ -122,9 +128,7 @@ class MainWindow(QMainWindow):
             self.show_error_dialog(str(e))
             return
 
-        file_fn = FileUtil.with_move_file(fn, self.main_input.get_output_path())
-
-        worker = Worker(file_fn, data, key)
+        worker = Worker(fn, key, data)
         worker.signals.error.connect(self.show_error_dialog)
         worker.signals.result.connect(self.show_success_window)
         QThreadPool.globalInstance().start(worker)

@@ -1,13 +1,10 @@
-from PyQt5.QtWidgets import QLineEdit, QLabel, QWidget, QVBoxLayout, QSizePolicy, QGroupBox, QPushButton, QFileDialog
-from PyQt5.QtCore import pyqtSlot, QThreadPool
 from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QPushButton, QFileDialog
 
-from crypt.gui.encryption_parms import EncryptionParms
-from crypt.gui.worker import Worker
-from crypt.gui.dialog_window import DialogWindow
 from crypt.gui.components.configuration_box.key_widget_factory import *
 from crypt.gui.components.main_input.input_file import InputFile
-from crypt.engine.key import Key
+from crypt.gui.dialog_window import DialogWindow
 
 
 class Keygen(QGroupBox):
@@ -30,7 +27,6 @@ class Keygen(QGroupBox):
 
         self.setLayout(self.layout)
 
-        self.btn_generate.clicked.connect(self.generate_key)
         self.output_file.btn_browse.clicked.connect(self.get_directory)
 
     def get_directory(self):
@@ -40,16 +36,6 @@ class Keygen(QGroupBox):
 
         if dir_path:
             self.output_file.line_edit.setText(dir_path)
-
-    def generate_key(self):
-        engine = EncryptionParms.get_instance().get_engine()
-        output_path = self.output_file.line_edit.text()
-        params = self.key_input.build_params()
-        engine = EncryptionParms.get_instance().get_engine()
-        worker = Worker(engine.generate_key, params, output_path)
-        worker.signals.error.connect(self.show_error_dialog)
-        worker.signals.result.connect(self.show_success_window)
-        QThreadPool.globalInstance().start(worker)
 
     def show_dialog_window(self, title, msg):
         DialogWindow(title, msg).exec_()
