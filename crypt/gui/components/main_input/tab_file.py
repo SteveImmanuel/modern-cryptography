@@ -1,9 +1,9 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFileDialog
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSpacerItem, QSizePolicy, QFileDialog
 
+from crypt.engine.data import *
 from crypt.gui.components.main_input.input_file import InputFile
 from crypt.gui.components.main_input.input_mode import InputMode
-from crypt.engine.data import *
 
 
 class TabFile(QWidget):
@@ -12,9 +12,6 @@ class TabFile(QWidget):
         self.setup_ui()
 
     def setup_ui(self):
-        self.lbl_msg = QLabel('File input must use \nExtended Vigenere Cipher Algorithm')
-        self.lbl_msg.setWordWrap(True)
-        self.lbl_msg.setAlignment(QtCore.Qt.AlignCenter)
         self.input_file = InputFile('Input file path', 'Import')
         self.output_file = InputFile('Output file path', 'Browse')
         self.input_mode = InputMode()
@@ -23,7 +20,6 @@ class TabFile(QWidget):
         self.layout.addSpacerItem(
             QSpacerItem(30, 30, QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
         )
-        self.layout.addWidget(self.lbl_msg)
         self.layout.addSpacerItem(QSpacerItem(30, 50, QSizePolicy.Expanding, QSizePolicy.Fixed))
         self.layout.addWidget(self.input_file)
         self.layout.addWidget(self.output_file)
@@ -55,4 +51,5 @@ class TabFile(QWidget):
 
     def build_data(self) -> Data:
         filepath = self.input_file.line_edit.text()
-        return Data(DataType.FILE, filepath)
+        output_path = self.output_file.line_edit.text()
+        return Data(DataType.FILE, filepath, output_path)

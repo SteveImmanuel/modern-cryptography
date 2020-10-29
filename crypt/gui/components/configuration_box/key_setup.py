@@ -1,14 +1,12 @@
-from PyQt5.QtWidgets import QLineEdit, QLabel, QWidget, QVBoxLayout, QRadioButton, QButtonGroup, QSizePolicy, QSpacerItem, QGroupBox, QFileDialog
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QSpacerItem, QGroupBox
 
-from crypt.gui.encryption_parms import OutputType, EncryptionParms
-from crypt.gui.components.configuration_box.key_widget_factory import *
 from crypt.engine.key import *
+from crypt.gui.components.configuration_box.key_widget_factory import *
 
 
 class KeySetup(QGroupBox):
     def __init__(self, parent: QWidget = None):
         super(KeySetup, self).__init__(parent=parent)
-        self.output_type_list = OutputType.list()
         self.setup_ui()
 
     def setup_ui(self):

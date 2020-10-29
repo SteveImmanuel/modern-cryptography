@@ -1,14 +1,8 @@
-from enum import Enum
-
 from crypt.engine.engine_factory import EngineType
-from crypt.gui.components.configuration_box.base_keygen import BaseKeygen
 from crypt.gui.components.configuration_box.base_key_setup import BaseKeySetup
-from crypt.gui.components.configuration_box.rsa.rsa_keygen import RSAKeygen
+from crypt.gui.components.configuration_box.base_keygen import BaseKeygen
 from crypt.gui.components.configuration_box.rsa.rsa_key_setup import RSAKeySetup
-# from crypt.gui.components.configuration_box.string_full_key import StringFullKey
-# from crypt.gui.components.configuration_box.hill_key import HillKey
-# from crypt.gui.components.configuration_box.affine_key import AffineKey
-# from crypt.gui.components.configuration_box.enigma_key import EnigmaKey
+from crypt.gui.components.configuration_box.rsa.rsa_keygen import RSAKeygen
 
 
 class KeyWidgetFactory():

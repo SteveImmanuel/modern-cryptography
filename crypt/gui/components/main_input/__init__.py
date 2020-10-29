@@ -25,8 +25,3 @@ class MainInput(QTabWidget):
         else:
             return self.tab_file.build_data()
 
-    def get_output_path(self) -> str:
-        if self.currentWidget() == self.tab_file:
-            return self.tab_file.output_file.line_edit.text()
-        else:
-            raise Exception('Can\'t get output of string input')

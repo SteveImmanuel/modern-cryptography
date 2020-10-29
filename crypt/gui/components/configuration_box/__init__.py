@@ -18,14 +18,14 @@ class ConfigurationBox(QWidget):
         self.combo_box = QComboBox()
         self.combo_box.addItems(map(lambda x: x.value, self.list_of_algorithm))
 
-        self.key_generation = Keygen()
-        self.key_generation.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.keygen = Keygen()
+        self.keygen.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         self.key_setup = KeySetup()
         self.key_setup.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         self.layout.addWidget(self.combo_box)
-        self.layout.addWidget(self.key_generation)
+        self.layout.addWidget(self.keygen)
         self.layout.addWidget(self.key_setup)
 
         self.setLayout(self.layout)
