@@ -1,10 +1,8 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem, QHBoxLayout, QPushButton, \
-    QFileDialog
-from PyQt5 import QtCore
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QSpacerItem
 
 from crypt.gui.components.configuration_box.base_keygen import BaseKeygen
 from crypt.gui.components.configuration_box.edit_with_button import EditWithButton
-from crypt.engine.key import *
+from crypt.gui.dialog_window import DialogWindow
 from crypt.utils.number_util import *
 
 
@@ -27,12 +25,13 @@ class ElgamalKeygen(BaseKeygen):
 
         self.setLayout(self.layout)
 
-        self.p_value.btn_random.clicked.connect(lambda: self.randomize_prime)
-        self.g_value.btn_random.clicked.connect(lambda: self.randomize(is_g=True))
-        self.x_value.btn_random.clicked.connect(lambda: self.randomize(is_g=False))
+        self.p_value.btn_random.clicked.connect(self.randomize_prime)
+        self.g_value.btn_random.clicked.connect(lambda: self.randomize_number(is_g=True))
+        self.x_value.btn_random.clicked.connect(lambda: self.randomize_number(is_g=False))
 
     def randomize_prime(self):
         random_prime = generate_prime_number(9)
+        print(random_prime)
         self.p_value.line_edit.setText(str(random_prime))
 
     def randomize_number(self, is_g: bool):
@@ -47,7 +46,7 @@ class ElgamalKeygen(BaseKeygen):
                     self.x_value.line_edit.setText(str(random_number))
 
         except:
-            print("INVALID P")
+            DialogWindow('Invalid', 'p value must be a prime number').exec_()
 
     def build_params(self):
         p = int(self.p_value.line_edit.text())
