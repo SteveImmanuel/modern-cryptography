@@ -1,6 +1,6 @@
 import pickle
 import time
-from typing import List
+from typing import List, Tuple, Union
 
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.data import Data, DataType
@@ -9,7 +9,7 @@ from eight_series_cipher.operation import CBC
 
 
 class DiffieHellman(BaseEngine):
-    def encrypt(self, public_key: Key, plain_text: Data) -> str:
+    def encrypt(self, public_key: Key, plain_text: Data) -> Union[str, Tuple[str, str]]:
         start_time = time.time()
         key = public_key.value[0]
         if plain_text.data_type != DataType.TEXT:
@@ -18,9 +18,12 @@ class DiffieHellman(BaseEngine):
         cbc = CBC(str(key))
         result = cbc.encipher(plain_text.value)
         execution_time = time.time() - start_time
-        return result
+        size_after = len(result)
+        size_before = len(plain_text.value)
+        info = BaseEngine.get_exec_info(execution_time, size_before, size_after)
+        return info, result
 
-    def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
+    def decrypt(self, secret_key: Key, cipher_text: Data) -> Union[str, Tuple[str, str]]:
         start_time = time.time()
         key = secret_key.value[0]
         if cipher_text.data_type != DataType.TEXT:
@@ -29,7 +32,10 @@ class DiffieHellman(BaseEngine):
         cbc = CBC(str(key))
         result = cbc.decipher(cipher_text.value)
         execution_time = time.time() - start_time
-        return result
+        size_after = len(result)
+        size_before = len(cipher_text.value)
+        info = BaseEngine.get_exec_info(execution_time, size_before, size_after)
+        return info, result
 
     def generate_key(self, params: List[int], output_path: str = '.') -> str:
         n, g, x, y = params

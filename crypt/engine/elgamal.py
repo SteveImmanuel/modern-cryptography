@@ -1,6 +1,7 @@
+import os
 import pickle
 import time
-import os
+from typing import Tuple
 
 from crypt.engine.base_engine import BaseEngine
 from crypt.engine.data import *
@@ -11,7 +12,7 @@ from crypt.utils.number_util import *
 
 
 class Elgamal(BaseEngine):
-    def encrypt(self, public_key: Key, plain_text: Data) -> str:
+    def encrypt(self, public_key: Key, plain_text: Data) -> Union[str, Tuple[str, str]]:
         start_time = time.time()
         y = public_key.value[0]
         g = public_key.value[1]
@@ -32,9 +33,12 @@ class Elgamal(BaseEngine):
 
                 result.append(str(a).rjust(max_digit, '0'))
                 result.append(str(b).rjust(max_digit, '0'))
-
+            result = ''.join(result)
             execution_time = time.time() - start_time
-            return ''.join(result)
+            size_after = len(result)
+            size_before = len(plain_text.value)
+            info = BaseEngine.get_exec_info(execution_time, size_before, size_after)
+            return info, result
         else:
             chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % block_size)
             with open(plain_text.output_path, 'w') as out:
@@ -50,10 +54,11 @@ class Elgamal(BaseEngine):
                         out.write(str(b).rjust(max_digit, '0'))
 
             execution_time = time.time() - start_time
-            file_size = os.stat(plain_text.output_path).st_size
-            return f'Execution complete. File saved in {plain_text.output_path}.\n\nTime execution = {execution_time} seconds\nFile size = {file_size} bytes'
+            size_after = os.stat(plain_text.output_path).st_size
+            size_before = os.stat(plain_text.value).st_size
+            return BaseEngine.get_exec_info(execution_time, size_before, size_after, plain_text.output_path)
 
-    def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
+    def decrypt(self, secret_key: Key, cipher_text: Data) -> Union[str, Tuple[str, str]]:
         start_time = time.time()
         x = secret_key.value[0]
         p = secret_key.value[1]
@@ -80,8 +85,12 @@ class Elgamal(BaseEngine):
                     result.append(int_to_bytes(cipher, block_size, True))
                     next_element = True
 
+            result = ''.join(result)
             execution_time = time.time() - start_time
-            return ''.join(result)
+            size_after = len(result)
+            size_before = len(cipher_text.value)
+            info = BaseEngine.get_exec_info(execution_time, size_before, size_after)
+            return info, result
         else:
             chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % max_digit)
             with open(cipher_text.output_path, 'wb') as out:
@@ -104,8 +113,9 @@ class Elgamal(BaseEngine):
                             next_element = True
 
             execution_time = time.time() - start_time
-            file_size = os.stat(cipher_text.output_path).st_size
-            return f'Execution complete. File saved in {cipher_text.output_path}.\n\nTime execution = {execution_time} seconds\nFile size = {file_size} bytes'
+            size_after = os.stat(cipher_text.output_path).st_size
+            size_before = os.stat(cipher_text.value).st_size
+            return BaseEngine.get_exec_info(execution_time, size_before, size_after, cipher_text.output_path)
 
     def generate_key(self, params: List[int], output_path: str = "."):
         p, g, x = params
