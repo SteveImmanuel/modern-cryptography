@@ -48,5 +48,5 @@ class InputString(QWidget):
         clip_board.setText(text, mode=clip_board.Clipboard)
 
     @pyqtSlot(object)
-    def on_result_update(self, result: str):
-        self.text_edit.setPlainText(result)
+    def on_result_update(self, result):
+        self.text_edit.setPlainText(result[1])

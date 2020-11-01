@@ -59,6 +59,9 @@ class MainWindow(QMainWindow):
     def show_success_window(self, msg):
         self.show_dialog_window('Success', msg)
 
+    def show_success_string_exec_window(self, msg):
+        self.show_dialog_window('Success', msg[0])
+
     def load_from_file(self):
         filepath, _ = QFileDialog.getOpenFileName(
             self, 'Load Text', QtCore.QDir.currentPath(), '*.txt'
@@ -113,6 +116,7 @@ class MainWindow(QMainWindow):
         worker = Worker(fn, key, data)
         worker.signals.error.connect(self.show_error_dialog)
         worker.signals.result.connect(self.main_input.tab_string.output_string.on_result_update)
+        worker.signals.result.connect(self.show_success_string_exec_window)
         QThreadPool.globalInstance().start(worker)
 
     def execute_file(self):

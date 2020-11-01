@@ -37,15 +37,6 @@ class Keygen(QGroupBox):
         if dir_path:
             self.output_file.line_edit.setText(dir_path)
 
-    def show_dialog_window(self, title, msg):
-        DialogWindow(title, msg).exec_()
-
-    def show_error_dialog(self, error_msg):
-        self.show_dialog_window('Error', error_msg)
-
-    def show_success_window(self, msg):
-        self.show_dialog_window('Success', msg)
-
     @pyqtSlot(object)
     def on_update_keygen_widget(self, engine_type: EngineType):
         self.layout.removeWidget(self.key_input)
