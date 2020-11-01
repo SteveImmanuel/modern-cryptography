@@ -12,6 +12,7 @@ from crypt.utils.number_util import *
 
 class Elgamal(BaseEngine):
     def encrypt(self, public_key: Key, plain_text: Data) -> str:
+        start_time = time.time()
         y = public_key.value[0]
         g = public_key.value[1]
         p = public_key.value[2]
@@ -31,9 +32,10 @@ class Elgamal(BaseEngine):
 
                 result.append(str(a).rjust(max_digit, '0'))
                 result.append(str(b).rjust(max_digit, '0'))
+
+            execution_time = time.time() - start_time
             return ''.join(result)
         else:
-            start_time = time.time()
             chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % block_size)
             with open(plain_text.output_path, 'w') as out:
                 for chunk in load_file(plain_text.value, chunk_size):
@@ -52,6 +54,7 @@ class Elgamal(BaseEngine):
             return f'Execution complete. File saved in {plain_text.output_path}.\n\nTime execution = {execution_time} seconds\nFile size = {file_size} bytes'
 
     def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
+        start_time = time.time()
         x = secret_key.value[0]
         p = secret_key.value[1]
 
@@ -76,9 +79,10 @@ class Elgamal(BaseEngine):
                     cipher = ((b % p) * (a_x_inverse % p)) % p
                     result.append(int_to_bytes(cipher, block_size, True))
                     next_element = True
+
+            execution_time = time.time() - start_time
             return ''.join(result)
         else:
-            start_time = time.time()
             chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % max_digit)
             with open(cipher_text.output_path, 'wb') as out:
                 for chunk in load_file(cipher_text.value, chunk_size):

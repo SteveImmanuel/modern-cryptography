@@ -12,6 +12,7 @@ from crypt.utils.number_util import *
 
 class RSA(BaseEngine):
     def encrypt(self, public_key: Key, plain_text: Data) -> str:
+        start_time = time.time()
         n = public_key.value[0]
         e = public_key.value[1]
         block_size = get_block_size(n)
@@ -24,9 +25,10 @@ class RSA(BaseEngine):
             for element in block_bytes:
                 cipher = pow(element, e, n)
                 result.append(str(cipher).rjust(max_digit, '0'))
+            
+            execution_time = time.time() - start_time
             return ''.join(result)
         else:
-            start_time = time.time()
             chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % block_size)
             with open(plain_text.output_path, 'w') as out:
                 for chunk in load_file(plain_text.value, chunk_size):
@@ -42,6 +44,7 @@ class RSA(BaseEngine):
             return f'Execution complete. File saved in {plain_text.output_path}.\n\nTime execution = {execution_time} seconds\nFile size = {file_size} bytes'
 
     def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
+        start_time = time.time()
         n = secret_key.value[0]
         d = secret_key.value[1]
         block_size = get_block_size(n)
@@ -54,9 +57,10 @@ class RSA(BaseEngine):
             for element in block_bytes:
                 cipher = pow(element, d, n)
                 result.append(int_to_bytes(cipher, block_size, True))
+
+            execution_time = time.time() - start_time
             return ''.join(result)
         else:
-            start_time = time.time()
             chunk_size = MAX_CHUNK_SIZE - (MAX_CHUNK_SIZE % max_digit)
             with open(cipher_text.output_path, 'wb') as out:
                 for chunk in load_file(cipher_text.value, chunk_size):

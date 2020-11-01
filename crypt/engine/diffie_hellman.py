@@ -1,4 +1,5 @@
 import pickle
+import time
 from typing import List
 
 from crypt.engine.base_engine import BaseEngine
@@ -9,21 +10,25 @@ from eight_series_cipher.operation import CBC
 
 class DiffieHellman(BaseEngine):
     def encrypt(self, public_key: Key, plain_text: Data) -> str:
+        start_time = time.time()
         key = public_key.value[0]
         if plain_text.data_type != DataType.TEXT:
             raise Exception('Current implementation only support string input')
 
         cbc = CBC(str(key))
         result = cbc.encipher(plain_text.value)
+        execution_time = time.time() - start_time
         return result
 
     def decrypt(self, secret_key: Key, cipher_text: Data) -> str:
+        start_time = time.time()
         key = secret_key.value[0]
         if cipher_text.data_type != DataType.TEXT:
             raise Exception('Current implementation only support string input')
 
         cbc = CBC(str(key))
         result = cbc.decipher(cipher_text.value)
+        execution_time = time.time() - start_time
         return result
 
     def generate_key(self, params: List[int], output_path: str = '.') -> str:
